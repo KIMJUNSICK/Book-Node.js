@@ -53,7 +53,7 @@ const handleMethod = (req, res) => {
       });
       return req.on("end", () => {
         console.log("PUT body: ", body);
-        users[key] = JSON.stringify(body).name;
+        users[key] = JSON.parse(body).name;
         return res.end(JSON.stringify(users));
       });
     }
