@@ -3,7 +3,6 @@ const fs = require("fs");
 const url = require("url");
 const qs = require("querystring");
 
-// Ftn for parsing cookie
 const parseCookies = (cookie = "") =>
   cookie
     .split(";")
@@ -17,20 +16,19 @@ const session = {};
 
 const server = http.createServer((req, res) => {
   const cookies = parseCookies(req.headers.cookie);
-  console.log(req.url, cookies);
   if (req.url.startsWith("/login")) {
     const { query } = url.parse(req.url);
     const { name } = qs.parse(query);
     const expires = new Date();
     expires.setMinutes(expires.getMinutes() + 5);
-    const randomInt = +new Date();
+    const randomInt = Date.now();
     session[randomInt] = {
       name,
       expires
     };
     res.writeHead(302, {
       Location: "/",
-      "Set-Cookie": `session=${randomInt} Expires=${expires.toGMTString()}; HttpOnly; Path=/`
+      "Set-Cookie": `session=${randomInt}; Expires=${expires.toGMTString()}; HttpOnly; Path=/`
     });
     res.end();
   } else if (cookies.session && session[cookies.session].expires > new Date()) {
