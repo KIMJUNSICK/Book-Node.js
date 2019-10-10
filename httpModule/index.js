@@ -1,14 +1,19 @@
 const http = require("http");
-const fs = require("fs");
 
-// http.createServer(callback)
+const parseCookies = (cookie = "") =>
+  cookie
+    .split(";")
+    .map(v => v.split("="))
+    .reduce((acc, [k, v]) => {
+      acc[k.trim()] = decodeURIComponent(v);
+      return acc;
+    }, {});
+
 const server = http.createServer((req, res) => {
-  fs.readFile("./index.html", (err, data) => {
-    if (err) {
-      throw err;
-    }
-    res.end(data);
-  });
+  const cookies = parseCookies(req.headers.cookie);
+  console.log(req.url, cookies);
+  res.writeHead(200, { "Set-Cookie": "mycookie=test" });
+  res.end("Hello Cookie");
 });
 
 server.listen(8080);
