@@ -5,7 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "node index.js"
+    "dev": "node server.js"
   },
   "dependencies": {
     "http": "^0.0.0"
