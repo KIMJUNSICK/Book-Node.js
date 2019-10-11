@@ -1,0 +1,8 @@
+{
+  "name": "SNS",
+  "version": "1.0.0",
+  "description": "Clone Twitter",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": "https://github.com/KIMJUNSICK/Book-Node.js.gits"
+}
