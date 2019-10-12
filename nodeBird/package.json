@@ -4,5 +4,12 @@
   "description": "Clone Twitter",
   "main": "index.js",
   "license": "MIT",
-  "repository": "https://github.com/KIMJUNSICK/Book-Node.js.gits"
+  "repository": "https://github.com/KIMJUNSICK/Book-Node.js.gits",
+  "scripts": {
+    "dev": "node app.js"
+  },
+  "dependencies": {
+    "mysql2": "^1.7.0",
+    "sequelize": "^5.19.6"
+  }
 }
