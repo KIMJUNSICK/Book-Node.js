@@ -6,7 +6,7 @@ import logger from "morgan";
 import session from "express-session";
 import flash from "connect-flash";
 
-import homeRouter from "./routes/home";
+import pageRouter from "./routes/page";
 
 // .env
 dotenv.config();
@@ -38,7 +38,8 @@ app.use(
 app.use(flash());
 
 // router
-app.get("/", homeRouter);
+// 'use', not 'get'
+app.use("/", pageRouter);
 
 // 404 middleware
 app.use((req, res, next) => {
