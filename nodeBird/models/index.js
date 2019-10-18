@@ -26,8 +26,8 @@ db.User.hasMany(db.Post);
 db.Post.belongsTo(db.User);
 
 // M:N
-db.Post.belongsToMany(db.Hashtag, { through: "PostHashtag" });
-db.Hashtag.belongsToMany(db.Post, { through: "PostHashtag" });
+db.Post.belongsToMany(db.HashTag, { through: "PostHashtag" });
+db.HashTag.belongsToMany(db.Post, { through: "PostHashtag" });
 
 // M:M
 db.User.belongsToMany(db.User, {

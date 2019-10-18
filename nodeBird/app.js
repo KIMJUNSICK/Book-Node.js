@@ -1,18 +1,22 @@
+import flash from "connect-flash";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import express from "express";
-import cookieParser from "cookie-parser";
-import path from "path";
-import logger from "morgan";
 import session from "express-session";
-import flash from "connect-flash";
-
+import logger from "morgan";
+import path from "path";
+import db from "./models";
 import pageRouter from "./routes/page";
 
 // .env
 dotenv.config();
 
+// db
+const { sequelize } = db;
+
 // express
 const app = express();
+sequelize.sync();
 
 // set
 app.set("views", path.join(__dirname, "views"));
@@ -49,7 +53,7 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
   res.status(err.status || 500);
