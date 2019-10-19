@@ -1,5 +1,5 @@
-import local from "passport-local";
-import kakao from "passport-kakao";
+import local from "./localStrategy";
+import kakao from "./kakaoStrategy";
 import db from "../models";
 
 const { User } = db;

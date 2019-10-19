@@ -1,8 +1,8 @@
-import local from "passport-local";
 import bcrypt from "bcrypt";
+import passportLocal from "passport-local";
 import db from "../models";
 
-const LocalStrategy = local.Strategy;
+const LocalStrategy = passportLocal.Strategy;
 const { User } = db;
 
 export default passport => {
