@@ -9,6 +9,7 @@ import passport from "passport";
 
 import db from "./models";
 import pageRouter from "./routes/page";
+import authRouter from "./routes/auth";
 import passportConfig from "./passport";
 
 // .env
@@ -50,6 +51,7 @@ app.use(passport.session());
 // router
 // 'use', not 'get'
 app.use("/", pageRouter);
+app.use("/auth", authRouter);
 
 // 404 middleware
 app.use((req, res, next) => {
