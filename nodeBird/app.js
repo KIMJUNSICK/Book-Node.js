@@ -5,8 +5,11 @@ import express from "express";
 import session from "express-session";
 import logger from "morgan";
 import path from "path";
+import passport from "passport";
+
 import db from "./models";
 import pageRouter from "./routes/page";
+import passportConfig from "./passport";
 
 // .env
 dotenv.config();
@@ -14,9 +17,10 @@ dotenv.config();
 // db
 const { sequelize } = db;
 
-// express
+// express & etc
 const app = express();
 sequelize.sync();
+passportConfig(passport);
 
 // set
 app.set("views", path.join(__dirname, "views"));
@@ -40,6 +44,8 @@ app.use(
   })
 );
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
 // router
 // 'use', not 'get'
