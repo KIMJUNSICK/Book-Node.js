@@ -1,0 +1,36 @@
+{
+  "name": "nodebird-api",
+  "version": "1.0.0",
+  "description": "make API for nodeBird",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/node": "^7.6.3",
+    "@babel/preset-env": "^7.6.3",
+    "bcrypt": "^3.0.5",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.4",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "morgan": "^1.9.1",
+    "mysql2": "^1.6.5",
+    "passport": "^0.4.0",
+    "passport-kakao": "0.0.5",
+    "passport-local": "^1.0.0",
+    "pug": "^2.0.1",
+    "sequelize": "^4.43.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-import": "^2.18.2",
+    "nodemon": "^1.18.10"
+  },
+  "scripts": {
+    "dev": "nodemon --exec babel-node app.js"
+  }
+}
