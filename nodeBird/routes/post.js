@@ -12,7 +12,7 @@ const router = express.Router();
 fs.readdir("uploads", err => {
   if (err) {
     console.error("folder of Uploads not found, Made dir");
-    fs.mkdir("uploads");
+    fs.mkdirSync("uploads");
   }
 });
 
