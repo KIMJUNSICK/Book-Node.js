@@ -1,22 +1,22 @@
-import express from "express";
-import fs from "fs";
-import multer from "multer";
-import path from "path";
 import { isLoggedIn } from "../middlewares";
 import db from "../models";
 
+const express = require("express");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
 const { Post, HashTag, User } = db;
+
 const router = express.Router();
 
-// fs
-fs.readdir("uploads", err => {
-  if (err) {
-    console.error("folder of Uploads not found, Made dir");
+fs.readdir("uploads", error => {
+  if (error) {
+    console.error("uploads 폴더가 없어 uploads 폴더를 생성합니다.");
     fs.mkdirSync("uploads");
   }
 });
 
-// upload middleware
 const upload = multer({
   storage: multer.diskStorage({
     destination(req, file, cb) {
@@ -24,12 +24,10 @@ const upload = multer({
     },
     filename(req, file, cb) {
       const ext = path.extname(file.originalname);
-      cb(
-        null,
-        path.basename(file.originalname, ext) + new Date().valueOf() + ext
-      );
+      cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
     }
-  })
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 router.post("/img", isLoggedIn, upload.single("img"), (req, res) => {
@@ -37,7 +35,6 @@ router.post("/img", isLoggedIn, upload.single("img"), (req, res) => {
   res.json({ url: `/img/${req.file.filename}` });
 });
 
-// upload post
 const upload2 = multer();
 router.post("/", isLoggedIn, upload2.none(), async (req, res, next) => {
   try {
@@ -46,11 +43,11 @@ router.post("/", isLoggedIn, upload2.none(), async (req, res, next) => {
       img: req.body.url,
       userId: req.user.id
     });
-    const hashtags = req.body.content.match(/#[^\s]*/g);
+    const hashtags = req.body.content.match(/#[^\s#]*/g);
     if (hashtags) {
       const result = await Promise.all(
         hashtags.map(tag =>
-          HashTag.findOrCreate({
+            HashTag.findOrCreate({
             where: { title: tag.slice(1).toLowerCase() }
           })
         )
@@ -58,35 +55,10 @@ router.post("/", isLoggedIn, upload2.none(), async (req, res, next) => {
       await post.addHashtags(result.map(r => r[0]));
     }
     res.redirect("/");
-  } catch (err) {
-    console.error(err);
-    next(err);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 });
 
-// hashtag
-router.get("/hashtag", async (req, res, next) => {
-  const {
-    query: { hashtag: query }
-  } = req;
-  if (!query) {
-    return res.redirect("/");
-  }
-  try {
-    const hashtag = await HashTag.findAll({ where: { title: query } });
-    let posts = [];
-    if (hashtag) {
-      posts = await hashtag.getPosts({ include: [{ model: User }] });
-    }
-    return res.render("main", {
-      title: `${query} | NodeBird`,
-      user: req.user,
-      twits: posts
-    });
-  } catch (err) {
-    console.error(err);
-    return next(err);
-  }
-});
-
-export default router;
+module.exports = router;
