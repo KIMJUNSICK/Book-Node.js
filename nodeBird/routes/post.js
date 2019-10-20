@@ -5,7 +5,7 @@ import path from "path";
 import { isLoggedIn } from "../middlewares";
 import db from "../models";
 
-const { Post, HashTag } = db;
+const { Post, HashTag, User } = db;
 const router = express.Router();
 
 // fs
@@ -63,3 +63,30 @@ router.post("/", isLoggedIn, upload2.none(), async (req, res, next) => {
     next(err);
   }
 });
+
+// hashtag
+router.get("/hashtag", async (req, res, next) => {
+  const {
+    query: { hashtag: query }
+  } = req;
+  if (!query) {
+    return res.redirect("/");
+  }
+  try {
+    const hashtag = await HashTag.findAll({ where: { title: query } });
+    let posts = [];
+    if (hashtag) {
+      posts = await hashtag.getPosts({ include: [{ model: User }] });
+    }
+    return res.render("main", {
+      title: `${query} | NodeBird`,
+      user: req.user,
+      twits: posts
+    });
+  } catch (err) {
+    console.error(err);
+    return next(err);
+  }
+});
+
+export default router;
