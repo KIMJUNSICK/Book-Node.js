@@ -11,7 +11,7 @@ const router = express.Router();
 router.post("/join", isNotLoggedIn, async (req, res, next) => {
   const { email, nick, password } = req.body;
   try {
-    const existingUser = await User.find({ where: { email } });
+    const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       req.flash("joinError", "this email Already exist");
       res.redirect("/join");

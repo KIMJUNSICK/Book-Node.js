@@ -1,5 +1,7 @@
+import db from "../models";
+
+const { User } = db;
 const KakaoStrategy = require("passport-kakao").Strategy;
-const { User } = require("../models");
 
 export default passport => {
   passport.use(
@@ -10,7 +12,7 @@ export default passport => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          const exUser = await User.find({
+          const exUser = await User.findOne({
             where: { snsId: profile.id, provider: "kakao" }
           });
           if (exUser) {

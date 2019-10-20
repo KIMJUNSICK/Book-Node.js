@@ -14,7 +14,7 @@ export default passport => {
       },
       async (email, password, done) => {
         try {
-          const existingUser = await User.find({ where: { email } });
+          const existingUser = await User.findOne({ where: { email } });
           if (existingUser) {
             const result = await bcrypt.compare(
               password,
