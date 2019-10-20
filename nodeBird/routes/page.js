@@ -1,15 +1,30 @@
 import express from "express";
 import { isLoggedIn, isNotLoggedIn } from "../middlewares";
+import db from "../models";
 
+const { User, Post } = db;
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.render("main", {
-    title: "NodeBird",
-    twits: [],
-    user: req.user,
-    loginError: req.flash("loginError")
-  });
+router.get("/", (req, res, next) => {
+  Post.findAll({
+    include: {
+      model: User,
+      attributes: ["id", "nick"]
+    },
+    order: [["createdAt", "DESC"]]
+  })
+    .then(posts => {
+      res.render("main", {
+        title: "NodeBird",
+        twits: posts,
+        user: req.user,
+        loginError: req.flash("loginError")
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      next(err);
+    });
 });
 
 router.get("/join", isNotLoggedIn, (req, res) => {
