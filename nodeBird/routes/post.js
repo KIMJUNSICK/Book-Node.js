@@ -69,7 +69,8 @@ router.get("/hashtag", async (req, res, next) => {
     res.redirect("/");
   }
   try {
-    const hashtag = await HashTag.findOne({ title: query });
+    const hashtag = await HashTag.findOne({ where: { title: query } });
+    console.log(hashtag);
     let posts = [];
     if (hashtag) {
       posts = await hashtag.getPosts({ include: [{ model: User }] });
