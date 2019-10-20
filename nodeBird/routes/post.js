@@ -6,7 +6,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-const { Post, HashTag } = db;
+const { Post, HashTag, User } = db;
 
 const router = express.Router();
 
@@ -61,4 +61,28 @@ router.post("/", isLoggedIn, upload2.none(), async (req, res, next) => {
   }
 });
 
-module.exports = router;
+router.get("/hashtag", async (req, res, next) => {
+  const {
+    query: { hashtag: query }
+  } = req;
+  if (!query) {
+    res.redirect("/");
+  }
+  try {
+    const hashtag = await HashTag.findOne({ title: query });
+    let posts = [];
+    if (hashtag) {
+      posts = await hashtag.getPosts({ include: [{ model: User }] });
+    }
+    res.render("main", {
+      title: `${query} | NodeBird`,
+      user: req.user,
+      twits: posts
+    });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+export default router;
