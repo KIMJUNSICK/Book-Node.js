@@ -6,7 +6,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-const { Post, HashTag, User } = db;
+const { Post, HashTag } = db;
 
 const router = express.Router();
 
@@ -47,7 +47,7 @@ router.post("/", isLoggedIn, upload2.none(), async (req, res, next) => {
     if (hashtags) {
       const result = await Promise.all(
         hashtags.map(tag =>
-            HashTag.findOrCreate({
+          HashTag.findOrCreate({
             where: { title: tag.slice(1).toLowerCase() }
           })
         )

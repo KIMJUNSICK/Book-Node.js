@@ -2,7 +2,7 @@ export default (sequelize, DataTypes) =>
   sequelize.define(
     "hashtag",
     {
-      content: {
+      title: {
         type: DataTypes.STRING(15),
         allowNull: false,
         unique: true
