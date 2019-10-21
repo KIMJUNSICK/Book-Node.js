@@ -5,13 +5,13 @@ import passport from "passport";
 import logger from "morgan";
 import session from "express-session";
 import flash from "connect-flash";
+import dotenv from "dotenv";
 import db from "./models";
-import passportConfig from "./config/config";
+import passportConfig from "./passport";
 
 import authRouter from "./routers/auth";
-import indexRouter from "./routers";
 
-require("dotenv").config();
+dotenv.config();
 
 const { PORT } = process.env;
 
@@ -48,7 +48,6 @@ app.use(passport.session());
 
 // router
 app.use("/auth", authRouter);
-app.use("/", indexRouter);
 
 // 404 middleware
 app.use((req, res, next) => {
