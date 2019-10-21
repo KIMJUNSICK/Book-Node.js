@@ -1,4 +1,4 @@
-export default (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) =>
   sequelize.define(
     "domain",
     {
@@ -28,4 +28,3 @@ export default (sequelize, DataTypes) => {
       paranoid: true
     }
   );
-};
