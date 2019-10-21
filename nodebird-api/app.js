@@ -10,6 +10,7 @@ import db from "./models";
 import passportConfig from "./passport";
 
 import authRouter from "./routers/auth";
+import indexRouter from "./routers";
 
 dotenv.config();
 
@@ -48,6 +49,7 @@ app.use(passport.session());
 
 // router
 app.use("/auth", authRouter);
+app.use("/", indexRouter);
 
 // 404 middleware
 app.use((req, res, next) => {
