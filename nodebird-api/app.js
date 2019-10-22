@@ -11,6 +11,7 @@ import passportConfig from "./passport";
 
 import authRouter from "./routers/auth";
 import indexRouter from "./routers";
+import v1Router from "./routers/v1";
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.use(passport.session());
 // router
 app.use("/auth", authRouter);
 app.use("/", indexRouter);
+app.use("/v1", v1Router);
 
 // 404 middleware
 app.use((req, res, next) => {
