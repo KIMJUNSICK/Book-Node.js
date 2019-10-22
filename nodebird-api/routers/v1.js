@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { verifyToken } from "../middlewares";
 import db from "../models";
 
-const { User, Domain, Post, HashTag } = db;
+const { User, Domain } = db;
 
 const router = express.Router();
 
