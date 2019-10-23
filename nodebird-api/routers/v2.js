@@ -1,11 +1,14 @@
 import express from "express";
 import jwt from "jsonwebtoken";
+import cors from "cors";
 import { verifyToken, apiLimiter } from "../middlewares";
 import db from "../models";
 
 const { User, Domain, Post, HashTag } = db;
 
 const router = express.Router();
+
+router.use(cors());
 
 router.post("/token", apiLimiter, async (req, res) => {
   const { clientSecret } = req.body;
