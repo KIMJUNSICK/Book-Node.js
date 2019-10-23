@@ -2,33 +2,57 @@ import express from "express";
 import axios from "axios";
 
 const router = express.Router();
+const URL = "http://localhost:4001/v1";
 
-router.get("/", (req, res) => res.send("Home"));
+axios.defaults.headers.origin = "http://localhost:4002";
 
-router.get("/test", async (req, res, next) => {
+const requestData = async (req, api) => {
   try {
     if (!req.session.jwt) {
-      const tokenResult = await axios.post("http://localhost:4001/v1/token", {
+      const tokenResult = await axios.post(`${URL}/token`, {
         clientSecret: process.env.CLIENT_SECRET
       });
-      if (tokenResult.data && tokenResult.data.code === 200) {
-        console.log(tokenResult.data.token);
-        req.session.jwt = tokenResult.data.token;
-      } else {
-        return res.json(tokenResult.data);
-      }
+      req.session.jwt = tokenResult.data.token;
     }
-
-    const result = await axios.get("http://localhost:4001/v1/test", {
+    return await axios.get(`${URL}${api}`, {
       headers: { authorization: req.session.jwt }
     });
-    return res.json(result.data);
   } catch (err) {
     console.error(err);
-    if (err.response.status === 419) {
-      return res.json(err.response.data);
+    if (err.response.status < 500) {
+      return err.message;
     }
-    return next(err);
+    throw err;
+  }
+};
+
+router.get("/test", async (req, res) => {
+  const result = await requestData(req, "/test");
+  return res.json(result.data);
+});
+
+router.get("/myposts", async (req, res, next) => {
+  try {
+    const result = await requestData(req, "/posts/my");
+    res.json(result.data);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+router.get("/search/:hashtag", async (req, res, next) => {
+  try {
+    const result = await requestData(
+      req,
+      `/posts/hashtag/${encodeURIComponent(req.params.hashtag)}`
+    );
+    res.json(result.data);
+  } catch (err) {
+    if (err.code) {
+      console.error(err);
+      next(err);
+    }
   }
 });
 
