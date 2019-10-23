@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import RateLimit from "express-rate-limit";
 
 export const isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -32,4 +33,23 @@ export const verifyToken = (req, res, next) => {
       message: "Token is not valid"
     });
   }
+};
+
+export const apiLimiter = new RateLimit({
+  windowMs: 60 * 1000,
+  max: 1,
+  delayMs: 0,
+  handler(req, res) {
+    res.status(this.statusCode).json({
+      code: this.statusCode,
+      message: "You can only request once a minute."
+    });
+  }
+});
+
+export const deprecated = (req, res) => {
+  return res.status(410).json({
+    code: 410,
+    message: "new version has been released. Use new version!"
+  });
 };

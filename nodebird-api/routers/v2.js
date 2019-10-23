@@ -1,15 +1,13 @@
 import express from "express";
 import jwt from "jsonwebtoken";
-import { verifyToken, deprecated } from "../middlewares";
+import { verifyToken, apiLimiter } from "../middlewares";
 import db from "../models";
 
 const { User, Domain, Post, HashTag } = db;
 
 const router = express.Router();
 
-router.use(deprecated);
-
-router.post("/token", async (req, res) => {
+router.post("/token", apiLimiter, async (req, res) => {
   const { clientSecret } = req.body;
   try {
     const domain = await Domain.findOne({
@@ -33,7 +31,7 @@ router.post("/token", async (req, res) => {
         nick: domain.user.nick
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1m", issuer: "nodebird" }
+      { expiresIn: "30m", issuer: "nodebird" }
     );
 
     return res.json({
@@ -50,11 +48,11 @@ router.post("/token", async (req, res) => {
   }
 });
 
-router.get("/test", verifyToken, (req, res) => {
+router.get("/test", verifyToken, apiLimiter, (req, res) => {
   res.json(req.decoded);
 });
 
-router.get("/posts/my", verifyToken, (req, res) => {
+router.get("/posts/my", verifyToken, apiLimiter, (req, res) => {
   Post.findAll({ where: { userId: req.decoded.id } })
     .then(posts => {
       console.log(posts);
@@ -72,29 +70,34 @@ router.get("/posts/my", verifyToken, (req, res) => {
     });
 });
 
-router.get("/posts/hashtag/:title", verifyToken, async (req, res) => {
-  try {
-    const hashtag = await HashTag.findOne({
-      where: { title: req.params.title }
-    });
-    if (!hashtag) {
-      return res.status(404).json({
-        code: 404,
-        message: "Not Found"
+router.get(
+  "/posts/hashtag/:title",
+  verifyToken,
+  apiLimiter,
+  async (req, res) => {
+    try {
+      const hashtag = await HashTag.findOne({
+        where: { title: req.params.title }
+      });
+      if (!hashtag) {
+        return res.status(404).json({
+          code: 404,
+          message: "Not Found"
+        });
+      }
+      const posts = await hashtag.getPosts();
+      return res.json({
+        code: 200,
+        payload: posts
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        code: 500,
+        message: "Server Error"
       });
     }
-    const posts = await hashtag.getPosts();
-    return res.json({
-      code: 200,
-      payload: posts
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      code: 500,
-      message: "Server Error"
-    });
   }
-});
+);
 
 export default router;
