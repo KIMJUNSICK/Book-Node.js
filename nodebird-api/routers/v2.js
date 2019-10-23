@@ -1,4 +1,5 @@
 import express from "express";
+import url from "url";
 import jwt from "jsonwebtoken";
 import cors from "cors";
 import { verifyToken, apiLimiter } from "../middlewares";
@@ -8,7 +9,16 @@ const { User, Domain, Post, HashTag } = db;
 
 const router = express.Router();
 
-router.use(cors());
+router.use(async (req, res, next) => {
+  const domain = await Domain.findOne({
+    where: { host: url.parse(req.get("origin")).host }
+  });
+  if (domain) {
+    cors({ origin: req.get("origin") })(req, res, next);
+  } else {
+    next();
+  }
+});
 
 router.post("/token", apiLimiter, async (req, res) => {
   const { clientSecret } = req.body;
