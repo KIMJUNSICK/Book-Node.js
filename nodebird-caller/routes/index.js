@@ -2,7 +2,7 @@ import express from "express";
 import axios from "axios";
 
 const router = express.Router();
-const URL = "http://localhost:4001/v1";
+const URL = "http://localhost:4001/v2";
 
 axios.defaults.headers.origin = "http://localhost:4002";
 
@@ -20,7 +20,7 @@ const requestData = async (req, api) => {
   } catch (err) {
     console.error(err);
     if (err.response.status < 500) {
-      return err.message;
+      return err.response;
     }
     throw err;
   }
