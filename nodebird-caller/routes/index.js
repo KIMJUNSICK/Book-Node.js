@@ -26,6 +26,10 @@ const requestData = async (req, api) => {
   }
 };
 
+router.get("/", (req, res) => {
+  res.render("main", { key: process.env.CLIENT_SECRET });
+});
+
 router.get("/test", async (req, res) => {
   const result = await requestData(req, "/test");
   return res.json(result.data);
