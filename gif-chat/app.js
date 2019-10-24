@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import flash from "connect-flash";
 import indexRouter from "./routes";
+import WebSocket from "./socket";
 
 require("dotenv").config();
 
@@ -47,6 +48,8 @@ app.use((err, req, res, next) => {
   res.render("error");
 });
 
-app.listen(PORT, () =>
+const server = app.listen(PORT, () =>
   console.log(`Listening on:✅  http://localhost:${PORT}`)
 );
+
+WebSocket(server);
